@@ -25,6 +25,9 @@
 /*****************************************************************************/
 /* feature_t SHOULD BE MODIFIED BY THE USER TO REFLECT THE FEATURE TYPE      */
 typedef int feature_t;
+
+// uncomment the next line for use with example1.c
+//typedef struct { int X,Y,Z; } feature_t;
 /*****************************************************************************/
 
 

@@ -30,6 +30,7 @@ main()
   e = emd(&s1, &s2, dist, flow, &flowSize);
 
   printf("emd=%f\n", e);
+  printf("flowsize=%d\n", flowSize);
   printf("\nflow:\n");
   printf("from\tto\tamount\n");
   for (i=0; i < 7; i++)
