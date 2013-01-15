@@ -54,7 +54,7 @@ int main( int argc, char** argv )
   int ddepth = CV_16S; // ?
   int scale = 1;
   int delta = 0;
-
+  
   /// Generate grad_x and grad_y
   Mat grad_x, grad_y;
   Mat abs_grad_x, abs_grad_y;
@@ -75,6 +75,35 @@ int main( int argc, char** argv )
   // Display gradient intensity image
   namedWindow("Intensity Gradient Magnitude", CV_WINDOW_AUTOSIZE );
   imshow( "Intensity Gradient Magnitude", grad );
+
+  // Find corners that correspond to edges
+  vector<Point2f> edge_corners;
+  vector<Point2f>::iterator pt_it;
+  for (pt_it = corners.begin(); pt_it != corners.end(); ++pt_it)
+  {
+	  int x = (int)(*pt_it).x;
+	  int y = (int)(*pt_it).y;
+	  Scalar edge_val = edges.at<uchar>(y, x);
+	  if (edge_val[0] != 0)
+	  {
+		  edge_corners.push_back( *pt_it);
+	  }
+  }
+
+  // Draw corners which are edges, with intensity from gradient magnitude image
+  Mat pt_img(image.rows, image.cols, grad.type());
+  for (pt_it = edge_corners.begin(); pt_it != edge_corners.end(); ++pt_it)
+  {
+	  int x = (int)(*pt_it).x;
+	  int y = (int)(*pt_it).y;
+	  Scalar pt_intensity = grad.at<uchar>(y, x);
+	  circle( pt_img, *pt_it, r, pt_intensity, -1, 8, 0 ); 
+  }
+
+  // Display weighted point set image
+  namedWindow("Weighted Point Set", CV_WINDOW_AUTOSIZE );
+  imshow( "Weighted Point Set", pt_img );
+
 
   waitKey(0);
 
