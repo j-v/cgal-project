@@ -16,6 +16,9 @@ int main( int argc, char** argv )
   int max_corners = 500;
   double quality_level = 0.04;
   double min_distance = 5.0;
+  // Sobel parameters
+  int scale = 1;
+  int delta = 0;
 
   image = imread( argv[1], 1 );
 
@@ -53,8 +56,7 @@ int main( int argc, char** argv )
   // Use Sobel operator to get X and Y partial intensity derivatives, then create matrix of gradient intensity
   Mat grad; // gradient intensity
   int ddepth = CV_16S; // ?
-  int scale = 1;
-  int delta = 0;
+
   
   /// Generate grad_x and grad_y
   Mat grad_x, grad_y;
