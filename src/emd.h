@@ -35,6 +35,12 @@ typedef struct
   int n;                /* Number of features in the signature */
   feature_t *Features;  /* Pointer to the features vector */
   float *Weights;       /* Pointer to the weights of the features */
+
+  void releaseMemory()
+  {
+	  delete[] Features;
+	  delete[] Weights;
+  }
 } signature_t;
 
 
