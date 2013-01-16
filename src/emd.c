@@ -77,7 +77,13 @@ static void addBasicVariable(int minI, int minJ, double *S, double *D,
 static void printSolution();
 #endif
 
-
+void releaseSignatureMemory()
+{
+	//TO DO
+	//delete[] Features;
+	//delete[] Weights;
+}
+  
 /******************************************************************************
 float emd(signature_t *Signature1, signature_t *Signature2,
 	  float (*Dist)(feature_t *, feature_t *), flow_t *Flow, int *FlowSize)
