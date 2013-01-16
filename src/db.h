@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+#include <stdio.h>
+#include <fstream>
+
 typedef struct
 {
 	std::string filename;
@@ -12,7 +15,7 @@ class EmdDB
 {
 public:
 	// dummy constructor, must call load or create after using
-	EmdDB() : numEntries(0) { }; 
+	EmdDB() : numEntries(0), f_out(NULL) { }; 
 
 	void addEntry(const entry_t & entry);
 
@@ -30,8 +33,11 @@ public:
 	void close();
 
 	unsigned int numEntries;
+	
+	
 
 private:
 	std::vector<entry_t> entries;
+	std::ofstream * f_out;
 
 };
