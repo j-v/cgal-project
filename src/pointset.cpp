@@ -22,7 +22,7 @@ int generate_signature(const std::string & imagePath, signature_t & signature)
 
 	if (!image.data)
 	{
-		printf("Unable to read image: %s \n", imagePath);
+		printf("Unable to read image: %s \n", imagePath.c_str());
 		return 1; // Fail
 	}
 
