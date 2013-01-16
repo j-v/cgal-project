@@ -25,6 +25,7 @@
 /*****************************************************************************/
 /* feature_t SHOULD BE MODIFIED BY THE USER TO REFLECT THE FEATURE TYPE      */
 // 2D features for CV image processing
+
 typedef struct {int X,Y; } feature_t;
 /*****************************************************************************/
 
