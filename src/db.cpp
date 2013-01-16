@@ -130,6 +130,8 @@ void EmdDB::close()
 	// clean up memory of signatures
 	for (int i=0; i<entries.size(); i++)
 	{
-		entries[i].signature.releaseMemory();
+		// TODO
+		//releaseSignatureMemory();
+		
 	}
 }
