@@ -59,6 +59,10 @@ int main( int argc, char** argv ) {
 		  if (generate_signature(firstParam, queryImageSignature) == 0) {
 			  
 			  //waitKey(0);
+			  EmdDB db;
+			  string db_path(argv[2]);
+			  db.load(db_path + DIR_SEP + EMDDB_INDEX);
+
 		  }
 		  else {
 			  cout << "Unable to generate the signature for this image. Please, check the path." << endl;

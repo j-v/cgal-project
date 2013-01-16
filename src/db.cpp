@@ -21,7 +21,6 @@ EmdDB::addEntry(const entry_t & entry)
 			<< "," << entry.signature.Weights[i];
 	}
 
-	(*f_out) << endl;
 }
 
 entry_t
@@ -41,6 +40,9 @@ int EmdDB::load(std::string path)
 		while (f.good())
 		{
 			getline(f, line);
+
+			if (line.compare("") == 0)
+				break;
 			
 			// parse csv line, putting values into a vector
 			stringstream ss(line);
@@ -64,6 +66,7 @@ int EmdDB::load(std::string path)
 				signature_t s;
 				s.Features = new feature_t[numPoints];
 				s.Weights =  new float[numPoints];
+				s.n = numPoints;
 				if (values.size() < 2 + 3*numPoints)
 				{
 					printf("Not enough values in CSV line \n");
@@ -113,6 +116,7 @@ int EmdDB::create(std::string path)
 	if (!(f_out->is_open()))
 	{
 		printf("Unable to create file: %s \n", path.c_str());
+		return 1; // FAIL
 	}
 
 	return 0; // Success
