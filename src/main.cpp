@@ -1,14 +1,16 @@
 #include <string>
 #include <iostream>
-
 #include <sys/types.h>
 #include <dirent.h>
 #include <vector>
-
+#include "db.h"
 #include "pointset.h"
 #include "emd.h"
 
 using namespace std;
+
+#define DIR_SEP "/"
+#define EMDDB_INDEX "emdindex.csv"
 
 int getDir (string dir, vector<string> &files) {
     DIR *dp;
@@ -24,17 +26,28 @@ int getDir (string dir, vector<string> &files) {
 }
 
 int main( int argc, char** argv ) {
-  //EmdDB emddb;
-  //if (1 == emddb.create("path"))...
   
   if (argc == 3) {
 	  string firstParam(argv[1]);
 	  if (firstParam.compare("-builddb") == 0) {
-		string dir = argv[2];
+		string dir(argv[2]);
 		vector<string> files = vector<string>();
 		if (getDir(dir,files) == 0) {
-			for (unsigned int i = 0;i < files.size();i++) {
-				cout << files[i] << endl;
+			EmdDB emddb;
+			string auxDir = dir + DIR_SEP;
+			if (emddb.create(auxDir + EMDDB_INDEX) == 0) {
+				for (unsigned int i = 0;i < files.size();i++) {
+					signature_t dbImageSignature;
+					generate_signature(dir + DIR_SEP + files[i], dbImageSignature);
+					entry_t entry;
+					entry.filename = files[i];
+					entry.signature = dbImageSignature;
+					emddb.addEntry(entry);
+				}
+				emddb.close();
+			}
+			else {
+				cout << "Unable to create the DB file. Please, check the permissions." << endl;
 			}
 		}
 		else {

@@ -35,12 +35,6 @@ typedef struct
   int n;                /* Number of features in the signature */
   feature_t *Features;  /* Pointer to the features vector */
   float *Weights;       /* Pointer to the weights of the features */
-
-  void releaseMemory()
-  {
-	  delete[] Features;
-	  delete[] Weights;
-  }
 } signature_t;
 
 
@@ -51,7 +45,7 @@ typedef struct
   float amount;         /* Amount of flow from "from" to "to" */
 } flow_t;
 
-
+void releaseSignatureMemory();
 
 float emd(signature_t *Signature1, signature_t *Signature2,
 	  float (*func)(feature_t *, feature_t *),
