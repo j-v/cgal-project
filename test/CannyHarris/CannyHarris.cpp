@@ -40,6 +40,7 @@ int main( int argc, char** argv )
   vector<Point2f> corners;
   goodFeaturesToTrack(gray_img, corners, max_corners, quality_level, min_distance);
 
+  // draw corners
   int r = 4;
   Mat copy = image.clone();
   for( int i = 0; i < corners.size(); i++ )
@@ -104,6 +105,7 @@ int main( int argc, char** argv )
   namedWindow("Weighted Point Set", CV_WINDOW_AUTOSIZE );
   imshow( "Weighted Point Set", pt_img );
 
+  
 
   waitKey(0);
 
