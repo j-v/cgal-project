@@ -6,3 +6,8 @@
 
 * Martí Griera
 * Jonathon Volkmar
+
+### Requirements
+
+* OpenCV
+* dirent.h (if on Windows)
