@@ -130,6 +130,8 @@ void EmdDB::close()
 		f_out->flush();
 		f_out->close();
 	}
+	delete f_out;
+	f_out = NULL;
 
 	// clean up memory of signatures
 	for (int i=0; i<entries.size(); i++)
