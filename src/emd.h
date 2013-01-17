@@ -45,7 +45,7 @@ typedef struct
   float amount;         /* Amount of flow from "from" to "to" */
 } flow_t;
 
-void releaseSignatureMemory();
+void releaseSignatureMemory(signature_t sig);
 
 float emd(signature_t *Signature1, signature_t *Signature2,
 	  float (*func)(feature_t *, feature_t *),

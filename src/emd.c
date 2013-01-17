@@ -77,7 +77,7 @@ static void addBasicVariable(int minI, int minJ, double *S, double *D,
 static void printSolution();
 #endif
 
-void releaseSignatureMemory()
+void releaseSignatureMemory(signature_t sig)
 {
 	//TO DO
 	//delete[] Features;
