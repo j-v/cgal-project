@@ -64,6 +64,7 @@ int main( int argc, char** argv ) {
 						entry.filename = files[i];
 						entry.signature = dbImageSignature;
 						emddb.addEntry(entry);
+						cout << "Added signature for file: " << files[i] << endl;
 					}
 					else
 					{
@@ -83,6 +84,7 @@ int main( int argc, char** argv ) {
 	  else {
 		  // QUERY IMAGE DATABASE
 		  signature_t queryImageSignature;
+		  cout << "Generating image signature...'" << endl;
 		  if (generate_signature(firstParam, queryImageSignature) == 0) {
 			  
 			  
@@ -92,6 +94,7 @@ int main( int argc, char** argv ) {
 			  db.load(db_path + DIR_SEP + EMDDB_INDEX);
 
 			  // Query every image in database
+			  cout << "Querying database..." << endl;
 			  vector<score_pair> scores;
 			  for (int i=0; i<db.numEntries; i++) {
 				entry_t e = db.getEntry(i);				

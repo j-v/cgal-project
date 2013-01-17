@@ -9,8 +9,7 @@ EmdDB::addEntry(const entry_t & entry)
 	entries.push_back(entry);
 	numEntries++;
 
-	// TODO write to file?
-	if (numEntries > 0)
+	if (numEntries > 1)
 		(*f_out) << endl;
 
 	(*f_out) << entry.filename << "," << entry.signature.n;
