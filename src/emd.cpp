@@ -80,8 +80,8 @@ static void printSolution();
 void releaseSignatureMemory(signature_t sig)
 {
 	//TO DO
-	//delete[] Features;
-	//delete[] Weights;
+	delete[] sig.Features;
+	delete[] sig.Weights;
 }
   
 /******************************************************************************
