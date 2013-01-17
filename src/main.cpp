@@ -54,8 +54,7 @@ int main( int argc, char** argv ) {
 		vector<string> files = vector<string>();
 		if (getDir(dir,files) == 0) {
 			EmdDB emddb;
-			string auxDir = dir + DIR_SEP;
-			if (emddb.create(auxDir + EMDDB_INDEX) == 0) {
+			if (emddb.create(dir + DIR_SEP + EMDDB_INDEX) == 0) {
 				for (unsigned int i = 0;i < files.size();i++) {
 					signature_t dbImageSignature;
 					if (0 == generate_signature(dir + DIR_SEP + files[i], dbImageSignature))
