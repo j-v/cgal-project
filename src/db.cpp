@@ -1,4 +1,5 @@
 #include "db.h"
+#include <stdlib.h>
 #include <sstream>
 
 using namespace std;
@@ -31,7 +32,7 @@ EmdDB::getEntry(unsigned int i)
 int EmdDB::load(std::string path)
 {
 	string line;
-	ifstream f(path); // csv file to open
+	ifstream f(path.c_str()); // csv file to open
 
 	if (f.is_open())
 	{
@@ -111,7 +112,7 @@ int EmdDB::load(std::string path)
 int EmdDB::create(std::string path)
 {
 	// TODO complete implementation
-	f_out = new ofstream(path);
+	f_out = new ofstream(path.c_str());
 	if (!(f_out->is_open()))
 	{
 		printf("Unable to create file: %s \n", path.c_str());
