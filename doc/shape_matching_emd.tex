@@ -7,6 +7,9 @@
 %\usepackage{moreverb}
 \usepackage[section]{placeins}
 \usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 
 \setlength{\parindent}{0pt}
 
@@ -49,6 +52,28 @@
 \caption{Each corner that is on a detected edge is given a weight, corresponding to the intensity gradient value at the same location, giving us a weighted point set. Low weights are black, high weights are white.}
 \label{overflow}
 \end{figure}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics{bird_points.png}
+\caption{Detected edges, detected corners, intensity gradient magnitude, and weighted point set for a simple shape (solid black shape on white background)}
+\label{overflow}
+\end{figure}
+
+\begin{algorithm}
+\caption{Generate image signature}
+\begin{algorithmic} 
+\begin{itemize}
+\item Find edges in image using Canny Edge detector
+\item Find corners in image using Harris corner detector
+\item Generate X partial derivative of intensity image using Sobel operator
+\item Generate Y partial derivative of intensity image using Sobel operator
+\item Combine X and Y partial derivatives to form intensity gradient magnitude image
+\end{itemize}
+\For{Each corner} \If{Corner is on an edge} Add point of corner to point set, with weight equal to value of intensity of point on gradient image \EndIf  \EndFor
+
+\end{algorithmic}
+\end{algorithm}
 
 \section{Preliminary Results}
 
@@ -112,6 +137,18 @@
         \hline
     \end{tabular}
 \end{table}
+
+\section{Further work}
+
+\begin{itemize}
+	\item Data collection and analysis from our shape matching algorithm, and tuning of parameters
+	\item Performance analysis
+	\item Optimize for larger data set
+	\item Build classified item database
+	\item Translations, rotations, and scaling?
+	\item Compare with other implementations of EMD?
+	\item Other methods of generating signatures? E.g. Different kinds of features
+\end{itemize}
 
 
 
