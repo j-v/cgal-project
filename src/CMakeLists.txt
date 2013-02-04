@@ -9,3 +9,6 @@ add_executable( emdvis emdvis.cpp emd.cpp pointset.cpp db.cpp )
 target_link_libraries( emdvis ${OpenCV_LIBS} )
 
 add_executable( emdmatrix emdmatrix.cpp emd.cpp db.cpp )
+
+add_executable( mdsvis mdsvis.cpp db.cpp )
+target_link_libraries( mdsvis ${OpenCV_LIBS} )

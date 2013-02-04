@@ -11,6 +11,13 @@
 #define EMDDB_INDEX "emdindex.csv"
 #define MAT_SEP_CHAR ' '
 
+
+void printUsage()
+{
+	cout << "Usage: emdmatrix DB_PATH [OUT_FILE]" << endl;
+}
+
+
 int compute_distance_matrix(EmdDB &db, double** mat)
 {
 	// init diagonal to 0
@@ -94,11 +101,6 @@ void release_matrix(double ** mat, int n)
 		delete[] mat[i];
 	}
 	delete[] mat;
-}
-
-void printUsage()
-{
-	cout << "Usage: emdmatrix DB_PATH [OUT_FILE]" << endl;
 }
 
 int main(int argc, char ** argv)
