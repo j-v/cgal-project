@@ -42,9 +42,9 @@ Compute the distance matrix of the point set:
 	Compute and output the distance matrix given a list of points with dimension D
 	Usage: python dist.py infile outfile D
 		
-	$ python dist.py .\results\shapes216\mds_2d.txt .\results\shapes216\emd_dist_mat.mat 2
+	$ python dist.py .\results\shapes216\mds_2d.txt .\results\shapes216\mds_dist_mat.mat 2
 
-	$ cat .\results\shapes216\emd_dist_mat.mat
+	$ cat .\results\shapes216\mds_dist_mat.mat
 	0 26.5470708028 19.725763432 31.6418237508 28.9468753411 11.0345977978 31.7564350453 ...
 
 Evaluation: calculate the difference (error) of the new distance matrix and original EMD distance matrix:
@@ -53,10 +53,24 @@ Evaluation: calculate the difference (error) of the new distance matrix and orig
 	Calculate the matrix difference between two csv mat files with dimensions NxN
 	Usage: matcompare.py FILE1 FILE2 N
 
-	$  python .\matcompare.py .\results\shapes216\emd_dist_mat.mat ..\shapes216\distmat.csv 217
+	$  python .\matcompare.py .\results\shapes216\mds_dist_mat.mat ..\shapes216\distmat.csv 217
 	total err=351002.342753
 	avg err=7.454020
 
 Output shown is sum of all error over all entries in matrix, and avg is sum/(NxN)
+
+Visualize the results of MDS:
+
+	... change directory to C++ binaries ...
+	$ ./mdsvis
+	mdsvis: Visualize the results of MDS (2D only)
+	Usage: ./mdsvis DB_PATH [-o OUTPUT_IMAGE] [-m MDS_PTS_FILE] [-w WIDTH] [-h HEIGHT] [-s SCALE]
+	MDS_PTS_FILE assumed to be in DB dir if omitted
+
+	$ ./mdsvis ../../shapes216
+	
+	Saved MDS.jpg
+
+	
 
 	

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
+#include <algorithm>
 
 #include <cv.h>
 #include <highgui.h>
@@ -16,6 +17,7 @@ using namespace cv;
 #define DIR_SEP "/"
 #define EMDDB_INDEX "emdindex.csv"
 #define MDS_PTS_FILE "mds_2d.txt"
+#define OUTPUT_IMAGE "MDS.jpg"
 #define MAT_SEP_CHAR ' '
 
 #define DEFAULT_WIDTH 5000
@@ -25,10 +27,25 @@ using namespace cv;
 typedef pair<float, float> MyPoint;
 typedef vector<MyPoint> Points;
 
+char* getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return 0;
+}
+
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
+
 void printUsage()
 {
 	cout << "mdsvis: Visualize the results of MDS (2D only)" << endl;
-	cout << "Usage: ./mdsvis DB_PATH [MDS_PTS_FILE [WIDTH [HEIGHT [SCALE]]]]" << endl;
+	cout << "Usage: ./mdsvis DB_PATH [-o OUTPUT_IMAGE] [-m MDS_PTS_FILE] [-w WIDTH] [-h HEIGHT] [-s SCALE]" << endl;
 	cout << "MDS_PTS_FILE assumed to be in DB dir if omitted" << endl;
 }
 
@@ -84,18 +101,18 @@ void findExtremes(Points &pts, float &minX, float &minY, float &maxX, float &max
 	}
 }
 
-int visualizeMds(EmdDB & db, string img_dir, Points & pts, int width, int height, float img_scale)
+int visualizeMds(EmdDB & db, string img_dir, Mat & output_image, Points & pts, int width, int height, float img_scale)
 {
 	float minX, minY, maxX, maxY;
 	findExtremes(pts, minX, minY, maxX, maxY);
-	Mat canvas(height, width, CV_8UC3);
-	canvas.setTo(Scalar(255, 255, 255));
+	output_image.create(height, width, CV_8UC3);
+	output_image.setTo(Scalar(255, 255, 255));
 
 	// coordinate scaling
 	float pt_width = maxX - minX;
 	float pt_height = maxY - minY;
 
-	float canvas_ratio = (float)width / (float)height;
+	float output_image_ratio = (float)width / (float)height;
 	float pt_space_ratio = (pt_width / pt_height);
 	// assume square output image
 	float x_ratio = (float)width / pt_width;
@@ -107,6 +124,7 @@ int visualizeMds(EmdDB & db, string img_dir, Points & pts, int width, int height
 		float x_cent, y_cent;
 		int x_draw, y_draw;
 		int scale_width, scale_height;
+		Mat pic;
 		try 
 		{
 			MyPoint pt = pts[i];
@@ -117,7 +135,7 @@ int visualizeMds(EmdDB & db, string img_dir, Points & pts, int width, int height
 			y_cent = y_ratio * ((-minY) + pt.second);
 
 			img_path = img_dir + DIR_SEP + e.filename;
-			Mat pic = imread(img_path.c_str());
+			pic = imread(img_path.c_str());
 			scale_width = (int)((float)pic.cols * img_scale);
 			scale_height = (int)((float)pic.rows * img_scale);
 			x_draw = x_cent - (scale_width / 2);
@@ -125,22 +143,34 @@ int visualizeMds(EmdDB & db, string img_dir, Points & pts, int width, int height
 			y_draw = y_cent - (scale_height / 2);
 			y_draw = y_draw < 0 ? 0 : y_draw;
 
+			// make sure the image will be drawn inside the output image, kind of a hack
+			if (scale_width > width || scale_height > height)
+			{
+				cout << "WARNING: Scaled image will not fit inside output image. Skipping " << endl;
+			}
+			if (x_draw < 0)
+				x_draw = 0;
+			else if (x_draw + scale_width > width - 1)
+				x_draw = width - scale_width - 1;
+			if (y_draw < 0)
+				y_draw = 0;
+			else if (y_draw + scale_height > height - 1)
+				y_draw = height - scale_height - 1;
+
 			Mat resized_pic;
 			resize(pic, resized_pic, Size(scale_width, scale_width));
 
 			Rect roi( Point( x_draw, y_draw ), Size( scale_width, scale_height));
-			Mat destinationROI = canvas( roi );
+			Mat destinationROI = output_image( roi );
 			resized_pic.copyTo( destinationROI );
 		}
 		catch (Exception e)
 		{
-			cout << "ERROR: " << e.what() << endl; ;
+			cout << "ERROR img_path=" << img_path << " :" << e.what() << endl; ;
 		}
 	}
 
-	// TODO better way of doing/organizing image saving
-	imwrite("MDS.jpg", canvas);
-	cout << "Saved MDS.jpg" << endl;
+
 	
 	return 0;
 }
@@ -153,24 +183,39 @@ int main(int argc, char ** argv)
 		exit(1);
 	}
 
+	if (cmdOptionExists(argv, argv+argc, "--help")) {
+		printUsage();
+		exit(0);
+	}
+
+	
+
 	// Parse parameters
 
 	string db_path(argv[1]);
 	string db_filename = db_path + DIR_SEP + EMDDB_INDEX;
 
+	char * pts_filename_cstr = getCmdOption(argv, argv+argc, "-m");
 	string pts_filename;
-	if (argc > 2)
+	if (!pts_filename_cstr)
 	{
-		pts_filename.assign(argv[2]);
+		pts_filename = string(db_path) + DIR_SEP + MDS_PTS_FILE;
 	}
 	else
 	{
-		pts_filename = db_path + DIR_SEP + MDS_PTS_FILE;
+		pts_filename.assign(pts_filename_cstr);
 	}
 
-	int width = (argc > 3) ? atoi(argv[3]) : DEFAULT_WIDTH;
-	int height = (argc > 4) ? atoi(argv[4]) : DEFAULT_HEIGHT;
-	float img_scale = (argc > 5) ? atof(argv[5]) : DEFAULT_SCALE;
+	char * output_filename = getCmdOption(argv, argv+argc, "-o");
+	if (!output_filename)
+		output_filename = OUTPUT_IMAGE;
+
+	char * width_opt = getCmdOption(argv, argv+argc, "-w");
+	char * height_opt = getCmdOption(argv, argv+argc, "-h");
+	char * scale_opt = getCmdOption(argv, argv+argc, "-s");
+	int width = width_opt ? atoi(width_opt) : DEFAULT_WIDTH;
+	int height = height_opt ? atoi(height_opt) : DEFAULT_HEIGHT;
+	float img_scale = scale_opt ? atof(scale_opt) : DEFAULT_SCALE;
 
 	// Start the real work
 
@@ -192,7 +237,12 @@ int main(int argc, char ** argv)
 
 	// We assume the Points vector and the db entries have an index-wise correspondance
 	
-	visualizeMds(db, db_path, pts, width, height, img_scale);
+	Mat output_image;
+	visualizeMds(db, db_path, output_image, pts, width, height, img_scale);
+
+	// Write image to file
+	imwrite(output_filename, output_image);
+	cout << "Saved " << output_filename << endl;
 
 	return 0;
 }
