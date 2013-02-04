@@ -10,6 +10,7 @@
 #define DIR_SEP "/"
 #define EMDDB_INDEX "emdindex.csv"
 #define MAT_SEP_CHAR ' '
+#define DEFAULT_OUT_FILE "emd_dist_mat.csv"
 
 
 void printUsage()
@@ -121,7 +122,7 @@ int main(int argc, char ** argv)
 	}
 	else
 	{
-		out_filepath = db_path + DIR_SEP + "distmat.csv";
+		out_filepath = db_path + DIR_SEP + DEFAULT_OUT_FILE;
 	}
 
 	EmdDB db;
