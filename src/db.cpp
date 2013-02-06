@@ -106,6 +106,7 @@ int EmdDB::load(std::string path)
 		return -1; // Failure
 	}
 	
+	this->path = path;
 	return 0; // Success
 }
 
@@ -119,6 +120,7 @@ int EmdDB::create(std::string path)
 		return 1; // FAIL
 	}
 
+	this->path = path;
 	return 0; // Success
 }
 
@@ -140,4 +142,9 @@ void EmdDB::close()
 		//releaseSignatureMemory();
 		
 	}
+}
+
+string EmdDB::getPath()
+{
+	return path;
 }
