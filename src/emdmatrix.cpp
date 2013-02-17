@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 #define DIR_SEP "/"
 #define EMDDB_INDEX "emdindex.csv"
@@ -68,7 +69,7 @@ int save_distance_matrix(string filename, double** mat, int size)
 
 double** load_distance_matrix(string filename)
 {
-	ifstream f(filename);
+	ifstream f(filename.c_str());
 	string line, value;
 	if (f.is_open())
 	{
