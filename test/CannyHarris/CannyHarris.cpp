@@ -12,7 +12,7 @@ int main( int argc, char** argv )
   // Canny parameters
   double threshold_low = 50.0;
   double threshold_high = 150.0;
-  // Harris parameters
+  // MinEigenVal & Harris parameters
   int max_corners = 500;
   double quality_level = 0.04;
   double min_distance = 5.0;
@@ -36,8 +36,7 @@ int main( int argc, char** argv )
   imshow( "Canny Edge Detection", edges );
 
   // Perform corner detection
-  // goodFeaturesToTrack uses Harris corner detection by default
-  int channels = 1;
+  // goodFeaturesToTrack uses cornerMinEigenVal corner detection by default
   Mat gray_img;
   cvtColor(image, gray_img, CV_BGR2GRAY);
   vector<Point2f> corners;
@@ -49,8 +48,20 @@ int main( int argc, char** argv )
   for( int i = 0; i < corners.size(); i++ )
      { circle( copy, corners[i], r, Scalar(255, 255, 0), 1, 8, 0 ); }
 
+  namedWindow("MinEigenVal Corner Detection", CV_WINDOW_AUTOSIZE );
+  imshow( "MinEigenVal Corner Detection", copy );
+  
+  //Perform corner detection again, now using Harris
+  vector<Point2f> corners2;
+  goodFeaturesToTrack(gray_img, corners2, max_corners, quality_level, min_distance, noArray(), 3, true);
+  
+  // draw corners2
+  Mat copy2 = image.clone();
+  for( int i = 0; i < corners2.size(); i++ )
+     { circle( copy2, corners2[i], 4, Scalar(255, 255, 0), 1, 8, 0 ); }
+  
   namedWindow("Harris Corner Detection", CV_WINDOW_AUTOSIZE );
-  imshow( "Harris Corner Detection", copy );
+  imshow( "Harris Corner Detection", copy2 );
 
   // refered to http://stackoverflow.com/questions/5787938/how-to-find-the-intensity-gradient-in-canny-edge-detector 
   // Use Sobel operator to get X and Y partial intensity derivatives, then create matrix of gradient intensity
