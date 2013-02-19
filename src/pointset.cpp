@@ -6,6 +6,8 @@
 
 int generate_signature(const std::string & imagePath, signature_t & signature)
 {
+	// TODO offset pointset to 0 is center of image
+
 	cv::Mat image;
 	// Canny parameters
 	double threshold_low = 50.0;
