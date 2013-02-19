@@ -51,7 +51,7 @@ void printUsage()
 
 int read_points(string filename, Points &points)
 {
-	ifstream f(filename);
+	ifstream f(filename.c_str());
 	string line, value;
 
 	if (f.is_open())
