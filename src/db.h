@@ -15,7 +15,7 @@ class EmdDB
 {
 public:
 	// dummy constructor, must call load or create after using
-	EmdDB() : numEntries(0), f_out(NULL) { }; 
+	EmdDB() : numEntries(0), f_out(NULL), path("") { }; 
 
 	void addEntry(const entry_t & entry);
 
@@ -32,12 +32,13 @@ public:
 	// Close the DB, flushing all written data to disk and performing clean-up
 	void close();
 
+	std::string getPath();
+
 	unsigned int numEntries;
 	
-	
-
 private:
 	std::vector<entry_t> entries;
 	std::ofstream * f_out;
+	std::string path;
 
 };
