@@ -6,8 +6,6 @@
 
 int generate_signature(const std::string & imagePath, signature_t & signature)
 {
-	// TODO offset pointset to 0 is center of image
-
 	cv::Mat image;
 	// Canny parameters
 	double threshold_low = 50.0;
@@ -31,6 +29,7 @@ int generate_signature(const std::string & imagePath, signature_t & signature)
 	// Create grayscale copy
 	cv::Mat gray_img;
 	cv::cvtColor(image, gray_img, CV_BGR2GRAY);
+	
 
 	// Perform Canny edge detection
 	cv::Mat edge_img;
@@ -85,4 +84,31 @@ int generate_signature(const std::string & imagePath, signature_t & signature)
 	}
 	
 	return 0; // Success
+}
+
+void get_centroid(signature_t & s, double & cent_x, double & cent_y)
+{
+	double x_sum = 0, y_sum = 0, weight_sum = 0;
+	for (unsigned int i = 0; i < s.n; i++)
+	{
+		weight_sum += s.Weights[i];
+		x_sum += (double)s.Features[i].X  * s.Weights[i];
+		y_sum += (double)s.Features[i].Y  * s.Weights[i];
+	}
+
+	cent_x = x_sum / weight_sum;
+	cent_y = y_sum / weight_sum;
+}
+
+void normalize_by_centroid(signature_t & s)
+{
+	double cx, cy;
+	get_centroid(s, cx, cy);
+
+	for (int i=0; i<s.n; i++)
+	{
+		s.Features[i].X -= (int)cx;
+		s.Features[i].Y -= (int)cy;
+	}
+
 }

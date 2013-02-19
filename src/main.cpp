@@ -20,7 +20,7 @@ using namespace std;
 
 typedef pair<entry_t, float> score_pair;
 
-static ostream log_stream;
+static ostream * log_stream;
 
 struct score_sort_pred {
 	bool operator()(const score_pair &left, const score_pair &right) {
@@ -82,13 +82,17 @@ int queryDatabase(EmdDB db, string queryImage)
 {
 	signature_t queryImageSignature;
 	cout << "Generating image signature...'" << endl;
-	if (generate_signature(queryImage, queryImageSignature) == 0) {			  
+	if (generate_signature(queryImage, queryImageSignature) == 0) {		
+		// TODO normalize queryImageSignature by centroid
+		double q_cent_x, q_cent_y;
+		normalize_by_centroid(queryImageSignature);
 
 		// Query every image in database
 		cout << "Querying database..." << endl;
 		vector<score_pair> scores;
 		for (int i=0; i<db.numEntries; i++) {
-			entry_t e = db.getEntry(i);				
+			entry_t e = db.getEntry(i);		
+			normalize_by_centroid(e.signature);
 			float emd_dist = emd(&queryImageSignature, &e.signature, euclid_dist2, NULL, NULL);
 			score_pair p = make_pair(e, emd_dist);
 			scores.push_back(p);
@@ -130,12 +134,11 @@ int main( int argc, char** argv ) {
 	  char * logfile = getCmdOption(argv, argv+argc, "-l");
 	  if (logfile != NULL)
 	  {
-		  ofstream f(logfile);
-		  log_stream = f;
+		  log_stream = new ofstream(logfile);
 	  }
 	  else
 	  {
-		  log_stream = cout;
+		  log_stream = &cout;
 	  }
 
 	  string firstParam(argv[1]);
