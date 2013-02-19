@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sys/types.h>
 #include <vector>
 #include <utility>
@@ -19,11 +20,28 @@ using namespace std;
 
 typedef pair<entry_t, float> score_pair;
 
+static ostream log_stream;
+
 struct score_sort_pred {
 	bool operator()(const score_pair &left, const score_pair &right) {
         return left.second < right.second;
     }
 };
+
+char* getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return 0;
+}
+
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
 
 int buildDatabase(string dir)
 {
@@ -66,16 +84,14 @@ int queryDatabase(EmdDB db, string queryImage)
 	cout << "Generating image signature...'" << endl;
 	if (generate_signature(queryImage, queryImageSignature) == 0) {			  
 
-		
-
 		// Query every image in database
 		cout << "Querying database..." << endl;
 		vector<score_pair> scores;
 		for (int i=0; i<db.numEntries; i++) {
-		entry_t e = db.getEntry(i);				
-		float emd_dist = emd(&queryImageSignature, &e.signature, euclid_dist2, NULL, NULL);
-		score_pair p = make_pair(e, emd_dist);
-		scores.push_back(p);
+			entry_t e = db.getEntry(i);				
+			float emd_dist = emd(&queryImageSignature, &e.signature, euclid_dist2, NULL, NULL);
+			score_pair p = make_pair(e, emd_dist);
+			scores.push_back(p);
 		}
 
 		// Sort scores
@@ -109,8 +125,19 @@ int queryDatabase(EmdDB db, string queryImage)
 }
 
 int main( int argc, char** argv ) {
-  
-  if (argc == 3) {
+
+  if (argc >= 3) {
+	  char * logfile = getCmdOption(argv, argv+argc, "-l");
+	  if (logfile != NULL)
+	  {
+		  ofstream f(logfile);
+		  log_stream = f;
+	  }
+	  else
+	  {
+		  log_stream = cout;
+	  }
+
 	  string firstParam(argv[1]);
 	  if (firstParam.compare("-builddb") == 0) { // BUILD IMAGE DATABASE
 		string dir(argv[2]);
@@ -127,8 +154,8 @@ int main( int argc, char** argv ) {
   }
   else {
 	  cout << "Incorrect call. The format should be:" << endl;
-	  cout << "chsemd -builddb path-to-directory-with-images" << endl;
-	  cout << "chsemd path-to-query-image path-to-db-directory" << endl;
+	  cout << "chsemd -builddb path-to-directory-with-images [-l logfile]" << endl;
+	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile]" << endl;
   }
 
   return 0;
