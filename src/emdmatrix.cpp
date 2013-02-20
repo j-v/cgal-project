@@ -1,6 +1,7 @@
 #include "emdmatrix.h"
 
 #include "functions.h"
+#include "pointset.h"
 
 #include <string>
 #include <iostream>
@@ -36,6 +37,9 @@ int compute_distance_matrix(EmdDB &db, double** mat)
 		{
 			entry_t e1 = db.getEntry(i);
 			entry_t e2 = db.getEntry(j);
+			normalize_by_centroid(e1.signature);
+			normalize_by_centroid(e2.signature);
+			
 			float e = emd(&e1.signature, &e2.signature, euclid_dist2, NULL, NULL);
 			mat[i][j] = e;
 			mat[j][i] = e;
