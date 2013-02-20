@@ -80,22 +80,32 @@ int buildDatabase(string dir)
 
 int queryDatabase(EmdDB db, string queryImage)
 {
+	
 	signature_t queryImageSignature;
 	cout << "Generating image signature...'" << endl;
 	if (generate_signature(queryImage, queryImageSignature) == 0) {		
 		// TODO normalize queryImageSignature by centroid
-		double q_cent_x, q_cent_y;
 		normalize_by_centroid(queryImageSignature);
 
 		// Query every image in database
 		cout << "Querying database..." << endl;
 		vector<score_pair> scores;
+		double emd_time, total_time;
 		for (int i=0; i<db.numEntries; i++) {
+			int64 total_start = cvGetTickCount();
 			entry_t e = db.getEntry(i);		
 			normalize_by_centroid(e.signature);
+			int64 emd_start = cvGetTickCount();
 			float emd_dist = emd(&queryImageSignature, &e.signature, euclid_dist2, NULL, NULL);
+			int64 emd_end = cvGetTickCount();
+			emd_time = ((double)emd_end - (double)emd_start) / cvGetTickFrequency();
 			score_pair p = make_pair(e, emd_dist);
 			scores.push_back(p);
+			int64 total_end = cvGetTickCount();
+			total_time = ((double)total_end - (double)total_start) / cvGetTickFrequency();
+
+			*log_stream << db.getPath() << "," << queryImage << "," << e.filename << "," << queryImageSignature.n << "," 
+				<< e.signature.n << "," << emd_time << "," << total_time << endl;
 		}
 
 		// Sort scores
@@ -132,6 +142,7 @@ int main( int argc, char** argv ) {
 
   if (argc >= 3) {
 	  char * logfile = getCmdOption(argv, argv+argc, "-l");
+	  log_stream = NULL;
 	  if (logfile != NULL)
 	  {
 		  log_stream = new ofstream(logfile);
@@ -151,15 +162,24 @@ int main( int argc, char** argv ) {
 		EmdDB db;
 		string db_path(argv[2]);
 		db.load(db_path + DIR_SEP + EMDDB_INDEX);
+
+		// write logfile header
+		if (log_stream)
+			*log_stream << "db_path,query_image,lib_image,query_points,lib_image_points,emd_time,total_time" << endl;
+
 		// perform query
 		queryDatabase(db, firstParam);
 	  }
+
+	  if (logfile != NULL)
+		  ((ofstream*)log_stream)->close();
   }
   else {
 	  cout << "Incorrect call. The format should be:" << endl;
 	  cout << "chsemd -builddb path-to-directory-with-images [-l logfile]" << endl;
 	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile]" << endl;
   }
+
 
   return 0;
 }
