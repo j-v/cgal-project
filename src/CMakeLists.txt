@@ -13,3 +13,6 @@ target_link_libraries( emdmatrix ${OpenCV_LIBS} )
 
 add_executable( mdsvis mdsvis.cpp db.cpp )
 target_link_libraries( mdsvis ${OpenCV_LIBS} )
+
+add_executable( perftest perftest.cpp pointset.cpp emd.cpp)
+target_link_libraries( perftest ${OpenCV_LIBS} )

@@ -112,3 +112,51 @@ void normalize_by_centroid(signature_t & s)
 	}
 
 }
+
+float signature_weight_sum(signature_t &s)
+{
+	float sum = 0;
+	for (int i=0; i < s.n; i++)
+		sum += s.Weights[i];
+	return sum;
+}
+
+float random_float_above_0() // returns float on interval (0,1]
+{
+	return (float)((rand()+1) % RAND_MAX)/(float)RAND_MAX;
+}
+float random_float() // returns float on interval [0,1]
+{
+	return (float)rand()/(float)RAND_MAX;
+}
+
+
+void random_point_set(signature_t &s, int num_points, float weight_sum, int width, int height)
+{
+	// create a random point set
+	s.n = num_points;
+	s.Features = new feature_t[num_points];
+	s.Weights = new float[num_points];
+
+	// generate random weights with uniform distribution
+	float * uniform_weights = new float[num_points];
+	float uniform_weight_sum = 0;
+	for (int i = 0; i<num_points; i++)
+	{
+		uniform_weights[i] = random_float_above_0();
+		uniform_weight_sum += uniform_weights[i];
+	}
+	
+	for (int i = 0; i<num_points; i++)
+	{
+		int x = rand() % width;
+		int y = rand() % height;
+		s.Features[i].X = x;
+		s.Features[i].Y = y;
+
+		// ensure we get the right final sum of weights	
+		s.Weights[i] = uniform_weights[i] / uniform_weight_sum * weight_sum; 
+	}
+
+	delete[] uniform_weights;
+}

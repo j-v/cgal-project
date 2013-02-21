@@ -15,7 +15,7 @@
 #define EMDDB_INDEX "emdindex.csv"
 #define MAT_SEP_CHAR ' '
 #define DEFAULT_OUT_FILE "emd_dist_mat.csv"
-#define DEFAULT_LOG_FILE "build_db_log.csv"
+#define DEFAULT_LOG_FILE "build_mat_log.csv"
 
 ofstream * log_stream;
 
@@ -57,7 +57,9 @@ int compute_distance_matrix(EmdDB &db, double** mat)
 			//cout << i << ", " << j << " : " << e << endl;
 
 			*log_stream << db.getPath() << "," << e1.filename << "," << e2.filename << "," 
-				<< e1.signature.n << "," << e2.signature.n << "," << emd_time << endl;
+				<< e1.signature.n << "," << e2.signature.n << "," 
+				<< signature_weight_sum(e1.signature) << "," << signature_weight_sum(e2.signature)
+				<< "," << emd_time << endl;
 		}
 	}
 
@@ -153,7 +155,7 @@ int main(int argc, char ** argv)
 		log_path = db_path + DIR_SEP + DEFAULT_LOG_FILE;
 	}
 	log_stream = new ofstream(log_path);
-	*log_stream << "db_path,img1,img2,sig1_points,sig2_points,emd_time" << endl;
+	*log_stream << "db_path,img1,img2,sig1_points,sig2_points,sig1_weight_sum,sig2_weight_sum,emd_time" << endl;
 
 	EmdDB db;
 	int result = db.load(db_file);
