@@ -18,6 +18,7 @@
 void printUsage()
 {
 	cout << "Usage: emdmatrix DB_PATH [OUT_FILE]" << endl;
+	cout << "OUT_FILE: defaults to " << DEFAULT_OUT_FILE << " in directory of DB_PATH" << endl;
 }
 
 

@@ -149,7 +149,8 @@ int main( int argc, char** argv ) {
 	  }
 	  else
 	  {
-		  log_stream = &cout;
+		  //log_stream = &cout;
+		  log_stream = NULL;
 	  }
 
 	  string firstParam(argv[1]);
