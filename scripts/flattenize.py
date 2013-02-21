@@ -16,12 +16,12 @@ for cat in cats:
 		srcpath = os.path.join(libpath, cat, item)
 		filename, extension = os.path.splitext(item)
 		destfile = cat + str(i) + extension
-		destpath = os.path.join(outpath, destfile)
+        destpath = os.path.join(outpath, destfile)
 		shutil.copyfile(srcpath, destpath)
-		
+
 		print 'Copied %s to %s' % (srcpath, destpath)
-		
+
 		i += 1
-		
+
 
 
