@@ -4,6 +4,7 @@
 
 #include "db.h"
 #include "functions.h"
+#include "pointset.h"
 
 
 #define DIR_SEP "/"
@@ -16,6 +17,18 @@ void printUsage() {
 	cout << "Compute EMD on two images in a database and visualize the flow" << endl;
 	cout << "Usage: ./emdvis DB_DIR IMAGE1 IMAGE2" << endl;
 }
+
+float max_val(float *arr, int n)
+{
+	float curr_max = 0;
+	for (int i=0; i<n; i++)
+	{
+		if (arr[i] > curr_max) 
+			curr_max = arr[i];
+	}
+	return curr_max;
+}
+
 
 int main( int argc, char** argv ) {
 	if (argc < 4)
@@ -76,6 +89,14 @@ int main( int argc, char** argv ) {
 	if (!(e2found && e1found))
 		exit(1);
 
+	// normalize by centroid
+	double s1_cx, s1_cy, s2_cx, s2_cy;
+	get_centroid(entry1.signature, s1_cx, s1_cy);
+	get_centroid(entry2.signature, s2_cx, s2_cy);
+	normalize_by_centroid(entry1.signature);
+	normalize_by_centroid(entry2.signature);
+
+
 	// Perform EMD		
 	int flowSize;
 	flow_t * flow = new flow_t[entry1.signature.n * entry2.signature.n];
@@ -96,9 +117,13 @@ int main( int argc, char** argv ) {
 	string impath2 = db_path + DIR_SEP + image2_name;
 	Mat pic1 = cvLoadImage(impath1.c_str());
 	Mat pic2 = cvLoadImage(impath2.c_str());
-	int rows = (int)max(pic1.size().height, pic2.size().height);
-	int cols = (int)max(pic1.size().width, pic2.size().width);;
+	/*int rows = (int)max(pic1.size().height, pic2.size().height);
+	int cols = (int)max(pic1.size().width, pic2.size().width);;*/
+	int rows = (int)(pic1.size().height + pic2.size().height);
+	int cols = (int)(pic1.size().width + pic2.size().width);
 	Mat im(rows, cols, CV_8UC3);
+
+
 
 	rectangle(im, Point2d(0, 0), Point2d(cols, rows), Scalar(255,255,255), CV_FILLED); // background
 
@@ -108,7 +133,9 @@ int main( int argc, char** argv ) {
 	// Draw flows
 
 	//double FLOW_SCALE = 0.05;
-	double FLOW_SCALE = (min(rows,cols) / 40.0)/255.0;
+	float max_weight = max( max_val(entry1.signature.Weights, entry1.signature.n),
+							max_val(entry2.signature.Weights, entry2.signature.n));
+	double FLOW_SCALE = (min(rows,cols) / 40.0)/(255.0*(max_weight/255.0)); // normalize for image size and max weight
 	Scalar flowColor(150,150,150);
 	for (int i=0; i< flowSize; i++)
 	{
@@ -116,23 +143,26 @@ int main( int argc, char** argv ) {
 		feature_t f1 = entry1.signature.Features[f.from];
 		feature_t f2 = entry2.signature.Features[f.to];
 		line(im,
-			Point2d(f1.X, f1.Y),
-			Point2d(f2.X, f2.Y),
+			//Point2d(f1.X, f1.Y),
+			//Point2d(f2.X, f2.Y),
+			Point2d(f1.X + s1_cx + s2_cx, f1.Y + s1_cy + s2_cy),
+			Point2d(f2.X + s2_cx + s1_cx, f2.Y + s2_cy + s1_cy),
 			flowColor,
 			(int)(1 + f.amount * FLOW_SCALE));
 	}
 
 	// Draw points
+
 	double WEIGHT_SCALE = FLOW_SCALE;
 	for (int i=0; i<entry1.signature.n; i++)
 	{
 		circle(im, 
-			Point2d(entry1.signature.Features[i].X, entry1.signature.Features[i].Y),
+			Point2d(entry1.signature.Features[i].X + s1_cx + s2_cx, entry1.signature.Features[i].Y + s1_cy + s2_cy),
 			(int) 1 + entry1.signature.Weights[i] * WEIGHT_SCALE,
 			color1,
 			CV_FILLED);
 		circle(pic1, 
-			Point2d(entry1.signature.Features[i].X, entry1.signature.Features[i].Y),
+			Point2d(entry1.signature.Features[i].X + s1_cx, entry1.signature.Features[i].Y + s1_cy),
 			(int) 1 + entry1.signature.Weights[i] * WEIGHT_SCALE,
 			color1,
 			CV_FILLED);
@@ -140,19 +170,18 @@ int main( int argc, char** argv ) {
 	for (int i=0; i<entry2.signature.n; i++)
 	{
 		circle(im, 
-			Point2d(entry2.signature.Features[i].X, entry2.signature.Features[i].Y),
+			Point2d(entry2.signature.Features[i].X + s2_cx + s1_cx, entry2.signature.Features[i].Y + s2_cy + s1_cy),
 			(int) (1 + entry2.signature.Weights[i] * WEIGHT_SCALE),
 			color2,
 			CV_FILLED);
 		circle(pic2, 
-			Point2d(entry2.signature.Features[i].X, entry2.signature.Features[i].Y),
+			Point2d(entry2.signature.Features[i].X + s2_cx, entry2.signature.Features[i].Y + s2_cy),
 			(int) (1 + entry2.signature.Weights[i] * WEIGHT_SCALE),
 			color2,
 			CV_FILLED);
 	}
 
 	
-
 	namedWindow("EMDVis", CV_WINDOW_AUTOSIZE);
 	imshow("EMDVis", im);
 	namedWindow("Image1", CV_WINDOW_AUTOSIZE);
