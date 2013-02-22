@@ -5,6 +5,9 @@ doc/shape_matching_emd.out
 doc/shape_matching_emd.pdf
 doc/shape_matching_emd.synctex.gz
 
+logs/*
+test/src2/CMakeFiles
+
 ########################
 # CMAKE
 ########################

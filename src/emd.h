@@ -17,7 +17,7 @@
 
 
 /* DEFINITIONS */
-#define MAX_SIG_SIZE   300
+#define MAX_SIG_SIZE   500
 #define MAX_ITERATIONS 500
 #define INFINITY       1e20
 #define EPSILON        1e-6

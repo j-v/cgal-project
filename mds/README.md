@@ -19,7 +19,7 @@ Perform MDS on the matrix outputted by the emdmatrix executable, outputting a li
 	  -rR -sS -tT may be used jointly (termination once any condition holds)
 	  output is written to stdout when no outfile specified
 
-	$ java -jar mdsj.jar ..\shapes216\distmat.csv .\results\shapes216\mds_2d.txt
+	$ java -jar mdsj.jar ..\shapes216\emd_dist_mat.csv .\results\shapes216\mds_2d.txt
 	MDSJ - Multidimensional Scaling for Java v0.2  (c) 2009 University of Konstanz
 	  ...reading input file... done (170 ms)
 	  read 218 rows, 217 columns
