@@ -44,7 +44,7 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
     return std::find(begin, end, option) != end;
 }
 
-int buildDatabase(string dir)
+int buildDatabase(string dir, bool normalize_weights)
 {
 	vector<string> files = vector<string>();
 	if (getDir(dir,files) == 0) {
@@ -52,8 +52,11 @@ int buildDatabase(string dir)
 		if (emddb.create(dir + DIR_SEP + EMDDB_INDEX) == 0) {
 			for (unsigned int i = 0;i < files.size();i++) {
 				signature_t dbImageSignature;
+				
 				if (0 == generate_signature(dir + DIR_SEP + files[i], dbImageSignature))
 				{
+					if (normalize_weights)
+						normalize_point_set(dbImageSignature);
 					entry_t entry;
 					entry.filename = files[i];
 					entry.signature = dbImageSignature;
@@ -164,7 +167,8 @@ int main( int argc, char** argv ) {
 	  string firstParam(argv[1]);
 	  if (firstParam.compare("-builddb") == 0) { // BUILD IMAGE DATABASE
 		string dir(argv[2]);
-		return buildDatabase(dir);
+		bool normalize_weights = cmdOptionExists(argv, argv+argc, "-N");
+		return buildDatabase(dir, normalize_weights);
 	  }
 	  else {	// QUERY IMAGE DATABASE
 		// Load database
@@ -185,8 +189,12 @@ int main( int argc, char** argv ) {
   }
   else {
 	  cout << "Incorrect call. The format should be:" << endl;
-	  cout << "chsemd -builddb path-to-directory-with-images [-l logfile]" << endl;
+	  cout << "chsemd -builddb path-to-directory-with-images [-N]" << endl;
 	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile] [-n number of results]" << endl;
+	  cout << "Flags:" << endl;
+	  cout << "N: Normalize sum of weights to 100" << endl;
+	  cout << "l : Log performance data in CSV format" << endl;
+	  cout << "n : Number of query results to display" << endl;
   }
 
 

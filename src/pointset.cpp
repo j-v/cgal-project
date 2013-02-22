@@ -160,3 +160,16 @@ void random_point_set(signature_t &s, int num_points, float weight_sum, int widt
 
 	delete[] uniform_weights;
 }
+
+void normalize_point_set(signature_t &signature)
+{
+	float totalWeight = 0;
+	for (int i = 0; i < signature.n; i++) {
+		totalWeight += signature.Weights[i];
+	}
+
+	// Normalization of the weights
+	for (int i = 0; i < signature.n; i++) {
+		signature.Weights[i] = (signature.Weights[i]/totalWeight)*100.0;
+	}
+}
