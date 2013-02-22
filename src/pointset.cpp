@@ -7,14 +7,14 @@
 int generate_signature(const std::string & imagePath, signature_t & signature)
 {
 	cv::Mat image;
-	// Canny parameters
+	// Canny parameters (edge detection)
 	double threshold_low = 50.0;
 	double threshold_high = 150.0;
-	// Harris parameters
+	// MinEigenVal parameters (corner detection)
 	int max_corners = 500;
 	double quality_level = 0.04;
 	double min_distance = 5.0;
-	// Sobel parameters
+	// Sobel parameters (intensity gradient)
 	int scale = 1;
 	int delta = 0;
 
@@ -35,7 +35,7 @@ int generate_signature(const std::string & imagePath, signature_t & signature)
 	cv::Mat edge_img;
 	cv::Canny(image, edge_img, threshold_low, threshold_high);
 
-	// Perform Harris corner detection (goodFeaturesToTrack usesHarris by default)
+	// Perform corner detection (goodFeaturesToTrack uses MinEigenVal by default)
 	std::vector<cv::Point2f> corners;
 	goodFeaturesToTrack(gray_img, corners, max_corners, quality_level, min_distance);
 
