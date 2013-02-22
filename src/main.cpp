@@ -17,6 +17,7 @@ using namespace std;
 
 #define DIR_SEP "/"
 #define EMDDB_INDEX "emdindex.csv"
+#define DEFAULT_TOP_N 10
 
 typedef pair<entry_t, float> score_pair;
 
@@ -78,7 +79,7 @@ int buildDatabase(string dir)
 	}
 }
 
-int queryDatabase(EmdDB db, string queryImage)
+int queryDatabase(EmdDB db, string queryImage, int top_n)
 {
 	
 	signature_t queryImageSignature;
@@ -104,8 +105,9 @@ int queryDatabase(EmdDB db, string queryImage)
 			int64 total_end = cvGetTickCount();
 			total_time = ((double)total_end - (double)total_start) / cvGetTickFrequency();
 
-			*log_stream << db.getPath() << "," << queryImage << "," << e.filename << "," << queryImageSignature.n << "," 
-				<< e.signature.n << "," << emd_time << "," << total_time << endl;
+			if (log_stream)
+				*log_stream << db.getPath() << "," << queryImage << "," << e.filename << "," << queryImageSignature.n << "," 
+					<< e.signature.n << "," << emd_time << "," << total_time << endl;
 		}
 
 		// Sort scores
@@ -117,8 +119,7 @@ int queryDatabase(EmdDB db, string queryImage)
 		string db_dir = db_path.substr(0, dir_sep_index);
 
 		// Output N top scores
-		int N = 5;
-		for (int i=0; i<N; i++) {
+		for (int i=0; i<top_n; i++) {
 			cout << i << ". " << scores[i].first.filename << " " << scores[i].second << endl;
 			//show image
 			string filename =  scores[i].first.filename;
@@ -153,6 +154,13 @@ int main( int argc, char** argv ) {
 		  log_stream = NULL;
 	  }
 
+	  char * top_n_str = getCmdOption(argv, argv+argc, "-n");
+	  int top_n;
+	  if (top_n_str != NULL)
+		  top_n = atoi(top_n_str);
+	  else
+		  top_n = DEFAULT_TOP_N;
+
 	  string firstParam(argv[1]);
 	  if (firstParam.compare("-builddb") == 0) { // BUILD IMAGE DATABASE
 		string dir(argv[2]);
@@ -169,7 +177,7 @@ int main( int argc, char** argv ) {
 			*log_stream << "db_path,query_image,lib_image,query_points,lib_image_points,emd_time,total_time" << endl;
 
 		// perform query
-		queryDatabase(db, firstParam);
+		queryDatabase(db, firstParam, top_n);
 	  }
 
 	  if (logfile != NULL)
@@ -178,7 +186,7 @@ int main( int argc, char** argv ) {
   else {
 	  cout << "Incorrect call. The format should be:" << endl;
 	  cout << "chsemd -builddb path-to-directory-with-images [-l logfile]" << endl;
-	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile]" << endl;
+	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile] [-n number of results]" << endl;
   }
 
 
