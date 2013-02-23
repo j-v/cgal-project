@@ -78,7 +78,7 @@ def main():
     #    print '%s : %s' % (im_name, str(scores[:5]))
 
     threshold = 20.0 # all items in neighbourhood must have distance less than threshold
-    max_neighborhood_size = 15
+    max_neighborhood_size = 5
 
     eval_scores = {}
     classifications = {}
@@ -137,12 +137,12 @@ def main():
         class_counts[class_name] = 0
         class_correct[class_name] = 0
     for im_name, im_class in classifications.items():
-        if im_class == None: continue
         correct_class = get_class_name(im_name)
-        guess_correct = correct_class == im_class
         class_counts[correct_class] += 1
+        if im_class == None: continue
+        guess_correct = correct_class == im_class
         if guess_correct: class_correct[correct_class] += 1
-    for class_name in classes:
+    for class_name in sorted(classes):
         print class_name, ': ', class_correct[class_name], ' / ', class_counts[class_name]
 
 
