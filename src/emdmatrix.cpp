@@ -154,7 +154,7 @@ int main(int argc, char ** argv)
 	{
 		log_path = db_path + DIR_SEP + DEFAULT_LOG_FILE;
 	}
-	log_stream = new ofstream(log_path);
+	log_stream = new ofstream(log_path.c_str());
 	*log_stream << "db_path,img1,img2,sig1_points,sig2_points,sig1_weight_sum,sig2_weight_sum,emd_time" << endl;
 
 	EmdDB db;
