@@ -1,5 +1,6 @@
 @echo off 
 set db_dir=C:\users\jonotron\Documents\image_banks\Caltech_50_cats_10_img_n
+set db_dir=..\shapes216
 set build_opts=-N
 @echo on
 ..\src\Release\chsemd.exe -builddb %db_dir% -l %db_dir%\build_db_log.csv %build_opts%

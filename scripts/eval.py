@@ -2,6 +2,15 @@ import math
 import sys
 import re
 
+DEFAULT_N = 5
+DEFAULT_T = 20.0
+
+def printusage():
+    print '''eval.py: Evaluate the shape matching system.
+usage: python eval.py EMD_INDEX_FILE EMD_MAT_FILE [N [T]]
+N: Neighborhood size (default %d)
+T: EMD Threshold (default %f)
+''' % (DEFAULT_N, DEFAULT_T)
 def load_mat(filename):
     f = open(filename)
     mat = []
@@ -36,9 +45,6 @@ def get_classes(img_list):
         classes.add(class_name)
     return classes
 
-def printusage():
-    print '''eval.py: Evaluate the shape matching system.
-usage: python eval.py EMD_INDEX_FILE EMD_MAT_FILE'''
 
 def main():
     if len(sys.argv) < 3:
@@ -46,6 +52,10 @@ def main():
         sys.exit(1)
     emd_index_file = sys.argv[1]
     emd_mat_file = sys.argv[2]
+
+    # all items in neighbourhood must have distance less than threshold
+    max_neighborhood_size = DEFAULT_N if len(sys.argv) < 4 else int(sys.argv[3])
+    threshold = DEFAULT_T if len(sys.argv) < 5 else float(sys.argv[4])
 
     images = load_lib(emd_index_file)
     # test: print image filenames
@@ -77,8 +87,6 @@ def main():
     #for im_name,scores in all_scores.items():
     #    print '%s : %s' % (im_name, str(scores[:5]))
 
-    threshold = 20.0 # all items in neighbourhood must have distance less than threshold
-    max_neighborhood_size = 5
 
     eval_scores = {}
     classifications = {}
