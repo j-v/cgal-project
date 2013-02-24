@@ -170,7 +170,8 @@ public void setup()
       }
       PVector p = new PVector(x,y,z);
       points[numPoints] = p;
-      String img_name = dataPath(img_path + "\\" + tags[numPoints]);
+      //String img_name = dataPath(img_path + "\\" + tags[numPoints]);
+      String img_name = dataPath(img_path + "/" + tags[numPoints]);
       String classname = getClass(tags[numPoints]);
       if (class_map.containsKey(classname))
       {

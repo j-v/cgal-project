@@ -1,0 +1,6 @@
+Neighborhoods
+
+neighbors_{a,T} = \{n_1, ..., n_k : (\forall{n_i})(EMD(n_i,a)<T), (\forall{i<j})(EMD(n_i,a) < EMD_{n_j,a}) \}
+
+neighbors_{a,Thresh,Max} = \{n_1, ..., n_k : (\forall{n_i})(n_i\in{neighbors_{a,Thresh}}), k=min(Max,\left | neighbors_{a,Thresh} \right |) \}
+
