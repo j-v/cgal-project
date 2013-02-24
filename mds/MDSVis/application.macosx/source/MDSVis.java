@@ -90,7 +90,7 @@ public void setup()
   //fill(204);
   
   
-  String bg_file = sketchPath("northern_lights_1024x768.jpg");
+  String bg_file = dataPath("northern_lights_1024x768.jpg");
   bgImage = loadImage(bg_file);
   
   PFont tag_font;
@@ -323,7 +323,10 @@ String[] instructions = { "CONTROLS",
                           ",/.: Previous/next class page",
                           "0-9: Toggle visibility of classes",
                           "c/v: Show none/all classes",
-                          "b: Toggle background image"};
+                          "b: Toggle background image",
+                          "Mouse drag left: rotate",
+                          "Mouse drag right: pan",
+                          "Mouse scroll: zoom" };
 
 public void showInstructions()
 {
