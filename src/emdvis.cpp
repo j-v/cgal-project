@@ -15,7 +15,7 @@ using namespace cv;
 
 void printUsage() {
 	cout << "Compute EMD on two images in a database and visualize the flow" << endl;
-	cout << "Usage: ./emdvis DB_DIR IMAGE1 IMAGE2" << endl;
+	cout << "Usage: ./emdvis DB_DIR IMAGE1 IMAGE2 [WEIGHT_SCALE_MULTIPLIER]" << endl;
 }
 
 float max_val(float *arr, int n)
@@ -43,6 +43,11 @@ int main( int argc, char** argv ) {
 	string db_path(argv[1]);
 	string image1_name(argv[2]);
 	string image2_name(argv[3]);
+
+	double flow_scale_multiplier = 1.0;
+
+	if (argc > 4)
+		flow_scale_multiplier = (double)atof(argv[4]);
 
 	// Load database
 	EmdDB db;	
@@ -121,6 +126,7 @@ int main( int argc, char** argv ) {
 	int cols = (int)max(pic1.size().width, pic2.size().width);;*/
 	int rows = (int)(pic1.size().height + pic2.size().height);
 	int cols = (int)(pic1.size().width + pic2.size().width);
+
 	Mat im(rows, cols, CV_8UC3);
 
 
@@ -133,9 +139,10 @@ int main( int argc, char** argv ) {
 	// Draw flows
 
 	//double FLOW_SCALE = 0.05;
+	
 	float max_weight = max( max_val(entry1.signature.Weights, entry1.signature.n),
-							max_val(entry2.signature.Weights, entry2.signature.n));
-	double FLOW_SCALE = (min(rows,cols) / 40.0)/(255.0*(max_weight/255.0)); // normalize for image size and max weight
+							max_val(entry2.signature.Weights, entry2.signature.n)) ;
+	double FLOW_SCALE = (min(rows,cols) / 40.0)/(255.0*(max_weight/255.0)) * flow_scale_multiplier; // normalize for image size and max weight
 	Scalar flowColor(150,150,150);
 	for (int i=0; i< flowSize; i++)
 	{

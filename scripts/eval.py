@@ -139,19 +139,22 @@ def main():
     print 'Average score', average_score
 
     # test get number of correct classifications per class
-    class_counts = {}
-    class_correct = {}
-    for class_name in classes:
-        class_counts[class_name] = 0
-        class_correct[class_name] = 0
-    for im_name, im_class in classifications.items():
-        correct_class = get_class_name(im_name)
-        class_counts[correct_class] += 1
-        if im_class == None: continue
-        guess_correct = correct_class == im_class
-        if guess_correct: class_correct[correct_class] += 1
-    for class_name in sorted(classes):
-        print class_name, ': ', class_correct[class_name], ' / ', class_counts[class_name]
+    #if (False):
+    if (True):
+        class_counts = {}
+        class_correct = {}
+        for class_name in classes:
+            class_counts[class_name] = 0
+            class_correct[class_name] = 0
+        for im_name, im_class in classifications.items():
+            correct_class = get_class_name(im_name)
+            if correct_class == None: continue
+            class_counts[correct_class] += 1
+            if im_class == None: continue
+            guess_correct = correct_class == im_class
+            if guess_correct: class_correct[correct_class] += 1
+        for class_name in sorted(classes):
+            print class_name, ': ', class_correct[class_name], ' / ', class_counts[class_name]
 
 
 

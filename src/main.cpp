@@ -82,7 +82,7 @@ int buildDatabase(string dir, bool normalize_weights)
 	}
 }
 
-int queryDatabase(EmdDB db, string queryImage, int top_n)
+int queryDatabase(EmdDB db, string queryImage, int top_n, bool normalize_weights)
 {
 	
 	signature_t queryImageSignature;
@@ -90,6 +90,8 @@ int queryDatabase(EmdDB db, string queryImage, int top_n)
 	if (generate_signature(queryImage, queryImageSignature) == 0) {		
 		// TODO normalize queryImageSignature by centroid
 		normalize_by_centroid(queryImageSignature);
+		if (normalize_weights)
+			normalize_point_set(queryImageSignature);
 
 		// Query every image in database
 		cout << "Querying database..." << endl;
@@ -163,11 +165,12 @@ int main( int argc, char** argv ) {
 		  top_n = atoi(top_n_str);
 	  else
 		  top_n = DEFAULT_TOP_N;
+	  bool normalize_weights = cmdOptionExists(argv, argv+argc, "-N");
 
 	  string firstParam(argv[1]);
 	  if (firstParam.compare("-builddb") == 0) { // BUILD IMAGE DATABASE
 		string dir(argv[2]);
-		bool normalize_weights = cmdOptionExists(argv, argv+argc, "-N");
+		
 		return buildDatabase(dir, normalize_weights);
 	  }
 	  else {	// QUERY IMAGE DATABASE
@@ -181,7 +184,7 @@ int main( int argc, char** argv ) {
 			*log_stream << "db_path,query_image,lib_image,query_points,lib_image_points,emd_time,total_time" << endl;
 
 		// perform query
-		queryDatabase(db, firstParam, top_n);
+		queryDatabase(db, firstParam, top_n,normalize_weights);
 	  }
 
 	  if (logfile != NULL)
@@ -190,7 +193,7 @@ int main( int argc, char** argv ) {
   else {
 	  cout << "Incorrect call. The format should be:" << endl;
 	  cout << "chsemd -builddb path-to-directory-with-images [-N]" << endl;
-	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile] [-n number of results]" << endl;
+	  cout << "chsemd path-to-query-image path-to-db-directory [-l logfile] [-n number of results] [-N]" << endl;
 	  cout << "Flags:" << endl;
 	  cout << "N: Normalize sum of weights to 100" << endl;
 	  cout << "l : Log performance data in CSV format" << endl;
