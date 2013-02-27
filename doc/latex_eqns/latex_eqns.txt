@@ -1,6 +1,22 @@
-Neighborhoods
 
-neighbors_{a,T} = \{n_1, ..., n_k : (\forall{n_i})(EMD(n_i,a)<T), (\forall{i<j})(EMD(n_i,a) < EMD_{n_j,a}) \}
+\\
+C = \{ class_1, ..., class_M \} $ e.g. $ \{birds, dogs, chairs...\}
+\\
+S = \{s_1, ..., s_N\}
+\\
+$Training set $ Tr = \{<s_1,c_1>,...<s_N,s_N>\}, i \in{I}, c \in C
+\\
+class(i) =
+\begin{cases}
+c, & \text{if } <i,c> \in{Tr} \\
+\text{None}, & \text{Otherwise}
+\end{cases}
+\\
+$Target function $ f : S \times C\rightarrow {T,F} \\
+$Approximated by $ \hat{f} : S \times C\rightarrow {T,F} \\
+neighbors_{s,T} = \{n_1, ..., n_k : (\forall{n_i})(EMD(n_i,s)<T), (\forall{i<j})(EMD(n_i,s) < EMD_{n_j,s}) \}
+\\
+neighbors_{s,T} = \{n_i : i\in{\{1,...,k\}},(\forall{i})(EMD(n_i,s)<T), (\forall{i,j})(EMD(n_i,s) < EMD(n_j,s) \} \\
+neighbors_{s,Thresh,Max} = \{n_1, ..., n_k : (\forall{n_i})(n_i\in{neighbors_{a,Thresh}}), k=min(Max,\left | neighbors_{a,Thresh} \right |) \} \\
 
-neighbors_{a,Thresh,Max} = \{n_1, ..., n_k : (\forall{n_i})(n_i\in{neighbors_{a,Thresh}}), k=min(Max,\left | neighbors_{a,Thresh} \right |) \}
-
+neighbors_{s,Thresh,Max} = \{n_i : (\forall{i})(n_i\in{neighbors_{a,T}}), i<min(Max,\left | neighbors_{a,T} \right |) \}
