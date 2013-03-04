@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
+import java.io.File; 
 import java.io.BufferedReader; 
 import java.io.PrintWriter; 
 import java.io.InputStream; 
@@ -94,9 +95,11 @@ public void setup()
   bgImage = loadImage(bg_file);
   
   PFont tag_font;
-  // The font "AndaleMono-48.vlw"" must be located in the 
+  // The font file must be located in the 
   // current sketch's "data" directory to load successfully
-  tag_font = loadFont("SimplifiedArabicFixed-48.vlw");
+  //tag_font = loadFont("SimplifiedArabicFixed-48.vlw");
+  //tag_font = loadFont(tag_font_name);
+  tag_font = createFont(tag_font_name,48);
   textFont(tag_font);
  
   
@@ -311,7 +314,7 @@ public void draw()
 }
 
 String[] instructions = { "CONTROLS",
-                          "********",
+                          "",
                           "i: Show/hide these instructions",
                           "q/w: Shrink/stretch the coordinate scale", 
                           "a/s: Smaller/larger class tags",

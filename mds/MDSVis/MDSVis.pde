@@ -73,9 +73,11 @@ void setup()
   bgImage = loadImage(bg_file);
   
   PFont tag_font;
-  // The font "AndaleMono-48.vlw"" must be located in the 
+  // The font file must be located in the 
   // current sketch's "data" directory to load successfully
-  tag_font = loadFont("SimplifiedArabicFixed-48.vlw");
+  //tag_font = loadFont("SimplifiedArabicFixed-48.vlw");
+  //tag_font = loadFont(tag_font_name);
+  tag_font = createFont(tag_font_name,48);
   textFont(tag_font);
  
   
@@ -125,6 +127,7 @@ void setup()
     r = new BufferedReader (new FileReader(filename));
   } catch (FileNotFoundException e)
   {
+    println("file not found");
   }
   
   String line;
@@ -141,7 +144,7 @@ void setup()
       float x = Float.parseFloat(parts[1]);
       float y = Float.parseFloat(parts[2]);
       float z;
-      if (parts.length > 3) 
+      if (parts.length > 3) p
         z = Float.parseFloat(parts[3]);
       else {
         z = 0;
@@ -152,7 +155,11 @@ void setup()
       //String img_name = dataPath(img_path + "\\" + tags[numPoints]);
       String img_name = dataPath(img_path + "/" + tags[numPoints]);
       String classname = getClass(tags[numPoints]);
-      if (class_map.containsKey(classname))
+      if (classname == null)
+      {
+        
+      }
+      else if (class_map.containsKey(classname))
       {
         
       }
@@ -164,7 +171,10 @@ void setup()
         class_names[num_classes] = classname;
         num_classes += 1;
       }
-      class_idx[numPoints] = (Integer)class_map.get(classname);
+      if (classname == null)
+        class_idx[numPoints] = 0;
+      else
+        class_idx[numPoints] = (Integer)class_map.get(classname);
       //classes.add(classname);
       
       print(img_name + "\n");
@@ -290,7 +300,7 @@ void draw()
 }
 
 String[] instructions = { "CONTROLS",
-                          "********",
+                          "",
                           "i: Show/hide these instructions",
                           "q/w: Shrink/stretch the coordinate scale", 
                           "a/s: Smaller/larger class tags",
