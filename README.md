@@ -63,4 +63,16 @@ Run MDSVis, choosing the names_and_points_3d.txt file created in the last time w
 
 Further parameters for the above described programs and parameters for emdvis can be shown by running the programs without arguments. You can play around with some of the python scripts in the ./scripts directory (e.g. eval.py for classifier evaluation)
 
+Two executables show how our signature generation methods (currently method 1 is used) work, displaying the results of the algorithms applied step by step. To compile and execute them, do the following:
 
+(for the first signature generation method)
+cd test/genSign1
+cmake .
+make
+./genSign1 PATH-TO-IMAGE
+
+(for the second signature generation method)
+cd test/genSign2
+cmake .
+make
+./genSign2 PATH-TO-IMAGE

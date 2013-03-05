@@ -38,12 +38,13 @@ int main( int argc, char** argv ) {
 	// HoughLinesP parameters
 	const double rho = 1.0; // 1 pixel, recommended
 	const double theta = CV_PI/180.0; // 1 degree, recommended
-
-	//core params
-	const int threshold = 30; // Recommended = 80
-	const double minLineLength = 10.0; // Recommended = 30, Default = 0 - most important param?
-	const double maxLineGap = 2.0; // Recommended = 10, Default = 0
-	pointSpacing = minLineLength * 2.0; // Extra parameter used in addPointsFromSegment 
+	const int threshold = 10; // Recommended = 80
+	// minLineLength should be defined considering the size (area) of the image, but we could not adjust it dynamically to work well in all cases
+	//const double minLineLength = src.rows * src.cols / 100000.0;
+	// We rather fix it to 5, which gives nice results (but too much points for big images)
+	const double minLineLength = 5; // Recommended = 30, Default = 0
+	const double maxLineGap = 3.0; // Recommended = 10, Default = 0
+	pointSpacing = minLineLength * 1.8; // Extra parameter used in addPointsFromSegment 
 	
 	// Sobel parameters
 	int scale = 1;

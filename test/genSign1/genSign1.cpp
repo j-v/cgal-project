@@ -22,11 +22,14 @@ int main( int argc, char** argv )
 
   image = imread( argv[1], 1 );
 
-  if( argc != 2 || !image.data )
-    {
-      printf( "No image data \n" );
-      return -1;
-    }
+  if( argc != 2 || !image.data ) {
+	printf( "No image data \n" );
+	return -1;
+  }
+  
+  // Display source image
+  namedWindow("Source", CV_WINDOW_AUTOSIZE);
+  imshow("Source", image);
     
   // Perform Canny edge detection
   Mat edges;
@@ -43,10 +46,9 @@ int main( int argc, char** argv )
   goodFeaturesToTrack(gray_img, corners, max_corners, quality_level, min_distance);
 
   // draw corners
-  int r = 4;
   Mat copy = image.clone();
   for( int i = 0; i < corners.size(); i++ )
-     { circle( copy, corners[i], r, Scalar(255, 255, 0), 1, 8, 0 ); }
+     { circle( copy, corners[i], 4, Scalar(255, 255, 0), 1, 8, 0 ); }
 
   namedWindow("MinEigenVal Corner Detection", CV_WINDOW_AUTOSIZE );
   imshow( "MinEigenVal Corner Detection", copy );
@@ -68,7 +70,6 @@ int main( int argc, char** argv )
   Mat grad; // gradient intensity
   int ddepth = CV_16S; // ?
 
-  
   /// Generate grad_x and grad_y
   Mat grad_x, grad_y;
   Mat abs_grad_x, abs_grad_y;
@@ -111,7 +112,7 @@ int main( int argc, char** argv )
 	  int x = (int)(*pt_it).x;
 	  int y = (int)(*pt_it).y;
 	  Scalar pt_intensity = grad.at<uchar>(y, x);
-	  circle( pt_img, *pt_it, r, pt_intensity, -1, 8, 0 ); 
+	  circle( pt_img, *pt_it, 1, pt_intensity, -1, 8, 0 ); 
   }
 
   // Display weighted point set image
@@ -119,8 +120,6 @@ int main( int argc, char** argv )
   imshow( "Weighted Point Set", pt_img );
 
   
-
   waitKey(0);
-
   return 0;
 }

@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( CannyHarris )
-find_package( OpenCV REQUIRED )
-add_executable( CannyHarris CannyHarris )
-target_link_libraries( CannyHarris ${OpenCV_LIBS} )

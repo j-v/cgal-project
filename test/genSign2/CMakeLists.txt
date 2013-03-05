@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( genSign2 )
+find_package( OpenCV REQUIRED )
+add_executable( genSign2 genSign2.cpp )
+target_link_libraries( genSign2 ${OpenCV_LIBS} )
