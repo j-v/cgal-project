@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <iostream>
 #include <algorithm>
 #include <highgui.h>
@@ -5,6 +7,8 @@
 #include "db.h"
 #include "functions.h"
 #include "pointset.h"
+
+#include "opencv2/opencv.hpp"
 
 
 #define DIR_SEP "/"
@@ -120,8 +124,8 @@ int main( int argc, char** argv ) {
 	
 	string impath1 = db_path + DIR_SEP + image1_name;
 	string impath2 = db_path + DIR_SEP + image2_name;
-	Mat pic1 = cvLoadImage(impath1.c_str());
-	Mat pic2 = cvLoadImage(impath2.c_str());
+	Mat pic1 = cvarrToMat(cvLoadImage(impath1.c_str()));
+	Mat pic2 = cvarrToMat(cvLoadImage(impath2.c_str()));
 	/*int rows = (int)max(pic1.size().height, pic2.size().height);
 	int cols = (int)max(pic1.size().width, pic2.size().width);;*/
 	int rows = (int)(pic1.size().height + pic2.size().height);

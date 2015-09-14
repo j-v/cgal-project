@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <iostream>
 #include <string>
 #include <utility>
@@ -10,6 +12,8 @@
 #include <highgui.h>
 
 #include "db.h"
+
+#include "opencv2/opencv.hpp"
 
 using namespace std;
 using namespace cv;

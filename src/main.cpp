@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -12,6 +14,7 @@
 #include "pointset.h"
 #include "emd.h"
 #include "functions.h"
+#include "opencv2/opencv.hpp"
 
 using namespace std;
 

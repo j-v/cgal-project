@@ -3,6 +3,7 @@
 #include <cv.h>
 #include <highgui.h>
 #include <vector>
+#include "opencv2/opencv.hpp"
 
 int generate_signature(const std::string & imagePath, signature_t & signature)
 {
